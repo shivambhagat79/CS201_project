@@ -308,32 +308,6 @@ void numTrieDisplay(struct NumTrieNode *root, char *num, int level)
     if (root->isEnd)
     {
         printf("%s : %s\n", num, root->name);
-
-        // char key[10];
-        // strcpy(key, num);
-
-        // char temp[MAX_NAME_SIZE];
-        // strcpy(temp, root->name);
-
-        // int len = strlen(temp);
-        // temp[0] = temp[0] - ' ';
-
-        // for (int i = 1; i < len; i++)
-        // {
-        //     if (temp[i - 1] == ' ')
-        //     {
-        //         temp[i] = temp[i] - ' ';
-        //     }
-        // }
-
-        // printf("\n%s", temp);
-
-        // for (int i = len; i < MAX_NAME_SIZE; i++)
-        // {
-        //     printf(" ");
-        // }
-
-        // printf(": %s\n", key);
     }
 
     int i;
