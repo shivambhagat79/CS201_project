@@ -1,4 +1,5 @@
 // * PROJECT  -  PHONE DIRECTORY USING TRIE DATA STRUCTURE
+// * Group 43
 
 // * Imports
 #include <stdio.h>
@@ -66,18 +67,18 @@ void nameTrieDisplay(struct NameTrieNode *root, char *str, int level)
         char temp[MAX_NAME_SIZE];
         strncpy(temp, str, level);
         temp[level] = '\0';
-    
+
         int len = strlen(temp);
         temp[0] = temp[0] - ' ';
-        for(int i = 1; i<len; i++)
+        for (int i = 1; i < len; i++)
         {
-            if(temp[i-1] == ' ')
+            if (temp[i - 1] == ' ')
             {
                 temp[i] = temp[i] - ' ';
             }
         }
-        printf("%s",temp);
-        for(int i = len; i<MAX_NAME_SIZE; i++)
+        printf("%s", temp);
+        for (int i = len; i < MAX_NAME_SIZE; i++)
         {
             printf(" ");
         }
@@ -136,7 +137,6 @@ void nameTrieInsert(struct NameTrieNode *root, char *key, long long int phoneNo)
     // setting node parameters
     root->isEnd = true;
     root->number = phoneNo;
-   
 }
 
 // * Function to search in name trie
@@ -144,7 +144,7 @@ void nameTrieSearch(struct NameTrieNode *root, char *key)
 {
     rectifyString(key); // get the string in required format
     int index;          // stores the index where each character in key is to stored
-    int length = strlen(key); 
+    int length = strlen(key);
 
     for (int i = 0; i < length; i++)
     {
@@ -154,7 +154,7 @@ void nameTrieSearch(struct NameTrieNode *root, char *key)
         }
         else
         {
-            index =key[i] - 'a';
+            index = key[i] - 'a';
         }
         if (root->children[index] == NULL)
         {
@@ -182,7 +182,7 @@ bool isNameEmpty(struct NameTrieNode *root)
 }
 
 // *   Function to delete from name trie
-struct NameTrieNode* NameTrieDelete(struct NameTrieNode *root, char *key, int depth)
+struct NameTrieNode *NameTrieDelete(struct NameTrieNode *root, char *key, int depth)
 {
     // if root is null
     if (!root)
@@ -313,15 +313,15 @@ void numTrieDisplay(struct NumTrieNode *root, char *num, int level)
         strcpy(temp, root->name);
         int len = strlen(temp);
         temp[0] = temp[0] - ' ';
-        for(int i = 1; i<len; i++)
+        for (int i = 1; i < len; i++)
         {
-            if(temp[i-1] == ' ')
+            if (temp[i - 1] == ' ')
             {
                 temp[i] = temp[i] - ' ';
             }
         }
-        printf("\n%s",temp);
-         for(int i = len; i<MAX_NAME_SIZE; i++)
+        printf("\n%s", temp);
+        for (int i = len; i < MAX_NAME_SIZE; i++)
         {
             printf(" ");
         }
@@ -418,9 +418,12 @@ struct NumTrieNode *numTrieDelete(struct NumTrieNode *root, char *key, int depth
     }
     return root;
 }
-    char name_input[MAX_NAME_SIZE];
-    char num_input[10];
 // --------------------------------------------------------------------------------------------------------------
+
+// * global variables needed for main function
+char name_input[MAX_NAME_SIZE];
+char num_input[10];
+
 // * Main function
 int main()
 {
@@ -429,18 +432,18 @@ int main()
     char dis[1] = "";
     FILE *ptr;
     ptr = fopen("sample_data.txt", "r");
-    if (NULL == ptr) 
+    if (NULL == ptr)
     {
         printf("file can't be opened \n");
     }
-    int i=1;
-    while (!feof(ptr)) 
+    int i = 1;
+    while (!feof(ptr))
     {
-        if(i%2 == 1)
+        if (i % 2 == 1)
         {
             fscanf(ptr, " %[^\n]", name_input);
         }
-        
+
         else
         {
             fscanf(ptr, " %s", num_input);
@@ -450,7 +453,7 @@ int main()
         }
         i++;
     }
-    while(true)
+    while (true)
     {
         printf("\n\nWELCOME TO YOUR PHONE DIRECTORY\n\n");
         printf("press 1 to create a new contact\n");
@@ -460,97 +463,96 @@ int main()
         printf("press 5 to exit the directory\n");
         printf("\nEnter your choice: ");
         int ch;
-        scanf("%d",&ch);
-        switch(ch)
+        scanf("%d", &ch);
+        switch (ch)
         {
-            case 1:
+        case 1:
+        {
+            printf("\n");
+            printf("Enter contact name : ");
+            size_t buff = 32;
+            char name[MAX_NAME_SIZE];
+            // Use %[^\n] to read all characters until a newline
+            if (scanf(" %[^\n]", name) != 1)
             {
-                printf("\n");
-                printf("Enter contact name : ");
-                size_t buff=32;
+                fprintf(stderr, "Error reading input.\n");
+                return 1;
+            }
+            printf("Enter contact number : ");
+            char num[10];
+            scanf("%s", num);
+            numTrieInsert(rootn, num, name);
+            long long int num1;
+            // Using strtoll to convert string input to long long integer
+            num1 = strtoll(num, NULL, 0);
+            nameTrieInsert(root, name, num1);
+            break;
+        }
+        case 2:
+        {
+            printf("\n");
+            nameTrieDisplay(root, dis, 0);
+            break;
+        }
+        case 3:
+        {
+            printf("\n");
+            printf("Enter 1 to search for a Contact Number \n");
+            printf("Enter 2 to search for a Contact Name \n");
+            int s;
+            printf("\nEnter your choice : ");
+            scanf("%d", &s);
+            if (s == 1)
+            {
+                char num[NUM_TRIE_SIZE];
+                printf("Enter Contact Number : ");
+                scanf("%s", num);
+                numTrieSearch(rootn, num);
+            }
+            else if (s == 2)
+            {
                 char name[MAX_NAME_SIZE];
-                // Use %[^\n] to read all characters until a newline
-                if (scanf(" %[^\n]", name) != 1) 
-                {
-                    fprintf(stderr, "Error reading input.\n");
-                    return 1;
-                }
-                printf("Enter contact number : ");
-                char num[10];
-                scanf("%s",num);
-                numTrieInsert(rootn,num,name);
-                long long int num1;
-                // Using strtoll to convert string input to long long integer
-                num1 = strtoll(num, NULL, 0);
-                nameTrieInsert(root,name,num1);
-                break;
+                printf("Enter Contact Name : ");
+                scanf("%s", name);
+                nameTrieSearch(root, name);
             }
-            case 2:
+            else
             {
-                printf("\n");
-                nameTrieDisplay(root,dis,0);
-                break;
+                printf("Invalid Choice\n");
             }
-            case 3:
+            break;
+        }
+        case 4:
+        {
+            printf("Enter 1 to delete a Contact Number : ");
+            printf("Enter 2 to delete a Contact Name : ");
+            int s;
+            scanf("%d", &s);
+            if (s == 1)
             {
-                printf("\n");
-                printf("Enter 1 to search for a Contact Number \n");
-                printf("Enter 2 to search for a Contact Name \n");
-                int s;
-                printf("\nEnter your choice : ");
-                scanf("%d",&s);
-                if(s==1)
-                {
-                    char num[NUM_TRIE_SIZE];
-                    printf("Enter Contact Number : ");
-                    scanf("%s",num);
-                    numTrieSearch(rootn, num);
-                }
-                else if(s==2)
-                {
-                    char name[MAX_NAME_SIZE];
-                    printf("Enter Contact Name : ");
-                    scanf("%s",name);
-                    nameTrieSearch(root,name);
-                }
-                else
-                {
-                    printf("Invalid Choice\n");
-                }
-                break;
-                
+                char num[NUM_TRIE_SIZE];
+                printf("Enter Contact Number :\n");
+                scanf("%s", num);
+                rootn = numTrieDelete(rootn, num, 0);
             }
-            case 4:
+            else if (s == 2)
             {
-                printf("Enter 1 to delete a Contact Number : ");
-                printf("Enter 2 to delete a Contact Name : ");
-                int s;
-                scanf("%d",&s);
-                if(s==1)
-                {
-                    char num[NUM_TRIE_SIZE];
-                    printf("Enter Contact Number :\n");
-                    scanf("%s",num);
-                    rootn=numTrieDelete(rootn, num,0);
-                }
-                else if(s==2)
-                {
-                    char name[MAX_NAME_SIZE];
-                    printf("Enter Contact Name :\n");
-                    scanf("%s",name);
-                    root=NameTrieDelete(root,name,0);
-                }
-                else
-                {
-                    printf("Invalid Choice\n");
-                }
-                printf("Contact Deleted Successfully\n");
-                break;
+                char name[MAX_NAME_SIZE];
+                printf("Enter Contact Name :\n");
+                scanf("%s", name);
+                root = NameTrieDelete(root, name, 0);
             }
-            case 5:
+            else
             {
-                exit(0);
+                printf("Invalid Choice\n");
             }
+            printf("Contact Deleted Successfully\n");
+            break;
+        }
+        case 5:
+        {
+            exit(0);
+        }
         }
     }
 }
