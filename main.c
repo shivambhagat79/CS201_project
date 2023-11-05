@@ -307,25 +307,33 @@ void numTrieDisplay(struct NumTrieNode *root, char *num, int level)
     // Printing when end is found
     if (root->isEnd)
     {
-        char key[10];
-        strcpy(key, num);
-        char temp[MAX_NAME_SIZE];
-        strcpy(temp, root->name);
-        int len = strlen(temp);
-        temp[0] = temp[0] - ' ';
-        for (int i = 1; i < len; i++)
-        {
-            if (temp[i - 1] == ' ')
-            {
-                temp[i] = temp[i] - ' ';
-            }
-        }
-        printf("\n%s", temp);
-        for (int i = len; i < MAX_NAME_SIZE; i++)
-        {
-            printf(" ");
-        }
-        printf(": %s\n", key);
+        printf("%s : %s\n", num, root->name);
+
+        // char key[10];
+        // strcpy(key, num);
+
+        // char temp[MAX_NAME_SIZE];
+        // strcpy(temp, root->name);
+
+        // int len = strlen(temp);
+        // temp[0] = temp[0] - ' ';
+
+        // for (int i = 1; i < len; i++)
+        // {
+        //     if (temp[i - 1] == ' ')
+        //     {
+        //         temp[i] = temp[i] - ' ';
+        //     }
+        // }
+
+        // printf("\n%s", temp);
+
+        // for (int i = len; i < MAX_NAME_SIZE; i++)
+        // {
+        //     printf(" ");
+        // }
+
+        // printf(": %s\n", key);
     }
 
     int i;
@@ -420,17 +428,17 @@ struct NumTrieNode *numTrieDelete(struct NumTrieNode *root, char *key, int depth
 }
 // --------------------------------------------------------------------------------------------------------------
 
-// * global variables needed for main function
-char name_input[MAX_NAME_SIZE];
-char num_input[10];
-
 // * Main function
 int main()
 {
     struct NameTrieNode *root = newNameTrieNode();
     struct NumTrieNode *rootn = newNumTrieNode();
+    char *name_input;
+    char num_input[10];
+
     char dis[1] = "";
     FILE *ptr;
+
     ptr = fopen("sample_data.txt", "r");
     if (NULL == ptr)
     {
@@ -441,6 +449,7 @@ int main()
     {
         if (i % 2 == 1)
         {
+            name_input = (char *)malloc(sizeof(char) * MAX_NAME_SIZE);
             fscanf(ptr, " %[^\n]", name_input);
         }
 
@@ -453,6 +462,10 @@ int main()
         }
         i++;
     }
+
+    // char p[100] = "";
+
+    // numTrieDisplay(rootn, p, 0);
     while (true)
     {
         printf("\n\nWELCOME TO YOUR PHONE DIRECTORY\n\n");
