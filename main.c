@@ -31,7 +31,7 @@ void rectifyString(char *key)
         {
             key[i] = key[i] + 32;
         }
-        else if (!((key[i] >= 97 && key[i] <= 122) | key[i] == ' ')) // remaining cases
+        else if (!((key[i] >= 97 && key[i] <= 122) || (key[i] == ' '))) // remaining cases
         {
             printf("Invalid String Entered\n");
             printf("%s\n", key);
@@ -110,9 +110,8 @@ void nameTrieDisplay(struct NameTrieNode *root, char *str, int level)
 void nameTrieInsert(struct NameTrieNode *root, char *key, long long int phoneNo)
 {
     rectifyString(key); // get the string in required format
-
     int index; // stores the index where each character in key is to be added
-
+    
     for (int i = 0; i < strlen(key); i++)
     {
         // getting index
@@ -124,7 +123,6 @@ void nameTrieInsert(struct NameTrieNode *root, char *key, long long int phoneNo)
         {
             index = key[i] - 97;
         }
-
         // setting child if it does not exist
         if (root->children[index] == NULL)
         {
@@ -145,7 +143,7 @@ void nameTrieSearch(struct NameTrieNode *root, char *key)
     rectifyString(key); // get the string in required format
     int index;          // stores the index where each character in key is to stored
     int length = strlen(key);
-
+    //struct NameTrieNode* temp=root;
     for (int i = 0; i < length; i++)
     {
         if (key[i] == ' ')
@@ -171,10 +169,11 @@ void nameTrieSearch(struct NameTrieNode *root, char *key)
 // * check if the node has no children
 bool isNameEmpty(struct NameTrieNode *root)
 {
-    for (int i = 0; i < NAME_TRIE_SIZE; i++)
+    for (int i = 0; i < 27; i++)
     {
-        if (root->children[i])
+        if (root->children[i]!=NULL)
         {
+            
             return false;
         }
     }
@@ -182,26 +181,21 @@ bool isNameEmpty(struct NameTrieNode *root)
 }
 
 // *   Function to delete from name trie
-struct NameTrieNode *NameTrieDelete(struct NameTrieNode *root, char *key, int depth)
+struct NameTrieNode *NameTrieDelete(struct NameTrieNode *root, char *key, int depth,int len)
 {
     // if root is null
     if (!root)
     {
         return NULL;
     }
-    int len = strlen(key);
-
     // if we are at the last character
     if (depth == len)
     {
-
-        if (root->isEnd)
-        {
-            root->isEnd = false;
-        }
-
+        root->isEnd = false;
         if (isNameEmpty(root))
         {
+           
+            free(root);
             root = NULL;
         }
         return root;
@@ -217,10 +211,12 @@ struct NameTrieNode *NameTrieDelete(struct NameTrieNode *root, char *key, int de
     {
         index = key[depth] - 'a';
     }
-    root->children[index] = NameTrieDelete(root->children[index], key, depth + 1);
+    
+    root->children[index] = NameTrieDelete(root->children[index], key, depth + 1,len);
 
     if (isNameEmpty(root) && root->isEnd == false)
     {
+        free(root);
         root = NULL;
     }
     return root;
@@ -329,7 +325,6 @@ void numTrieSearch(struct NumTrieNode *root, char *key)
     rectifyNum(key); // get the string in required format
     int index;       // stores the index where each character in key is to stored
     int length = strlen(key);
-
     for (int i = 0; i < length; i++)
     {
         index = key[i] - '0';
@@ -341,8 +336,8 @@ void numTrieSearch(struct NumTrieNode *root, char *key)
         }
 
         root = root->children[index];
+       
     }
-
     numTrieDisplay(root, key, length);
 }
 
@@ -369,7 +364,7 @@ struct NumTrieNode *numTrieDelete(struct NumTrieNode *root, char *key, int depth
     }
 
     int len = strlen(key);
-
+    printf("%d\n",len);
     // if we are at the last digit
     if (depth == len)
     {
@@ -458,7 +453,8 @@ int main()
             printf("\n");
             printf("Enter contact name : ");
             size_t buff = 32;
-            char name[MAX_NAME_SIZE];
+            char *name;
+            name = (char *)malloc(sizeof(char) * MAX_NAME_SIZE);
             // Use %[^\n] to read all characters until a newline
             if (scanf(" %[^\n]", name) != 1)
             {
@@ -473,6 +469,7 @@ int main()
             // Using strtoll to convert string input to long long integer
             num1 = strtoll(num, NULL, 0);
             nameTrieInsert(root, name, num1);
+            free(name);
             break;
         }
         case 2:
@@ -498,10 +495,12 @@ int main()
             }
             else if (s == 2)
             {
-                char name[MAX_NAME_SIZE];
+                char *name;
                 printf("Enter Contact Name : ");
+                name = (char *)malloc(sizeof(char) * MAX_NAME_SIZE);
                 scanf("%s", name);
                 nameTrieSearch(root, name);
+                free(name);
             }
             else
             {
@@ -511,8 +510,8 @@ int main()
         }
         case 4:
         {
-            printf("Enter 1 to delete a Contact Number : ");
-            printf("Enter 2 to delete a Contact Name : ");
+            printf("Enter contact to be deleted a Contact Number : \n");
+            printf("Enter 2 to delete a Contact Name : \n");
             int s;
             scanf("%d", &s);
             if (s == 1)
@@ -524,10 +523,19 @@ int main()
             }
             else if (s == 2)
             {
-                char name[MAX_NAME_SIZE];
+                char *name;
                 printf("Enter Contact Name :\n");
-                scanf("%s", name);
-                root = NameTrieDelete(root, name, 0);
+                name = (char *)malloc(sizeof(char) * MAX_NAME_SIZE);
+                
+                // Use %[^\n] to read all characters until a newline
+                if (scanf(" %[^\n]", name) != 1)
+                {  
+                    fprintf(stderr, "Error reading input.\n");
+                    return 1;
+                }
+                rectifyString(name);
+                root = NameTrieDelete(root, name, 0,strlen(name));
+                free(name);
             }
             else
             {
